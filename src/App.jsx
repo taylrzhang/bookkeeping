@@ -1,15 +1,18 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
+import { Route, Routes } from "react-router-dom";
+import Account from './components/Account';
+import CreateTransac from './components/CreateTransac' 
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  
   return (
     <>
-      <h5>Bookkeeping</h5>
-      <button id="addBtn" type="button" class="btn btn-link">create</button>
+      <Routes>
+        <Route path="/account" element={<Account />} />
+        <Route path="/account/create" element={<CreateTransac />} />
+      </Routes>
     </>
   )
 }
