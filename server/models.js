@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 
-//url to my MongoDB Atlas cluster
+const SALT_WORK_FACTOR = 10;
 
+//url to my MongoDB Atlas cluster
 mongoose
   .connect(process.env.MONGO_URI, {
     // options for the connect method to parse the URI
@@ -21,12 +23,41 @@ const transacSchema = new Schema({
   time: String,
   type: { type: String, required: true },
   amount:String,
-  note:String
+  note:String,
+  userId: String
 });
 
 const Transac = mongoose.model("Transac", transacSchema);
 
+const userSchema = new Schema({
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+})
+
+userSchema.pre('save', async function save(next) {
+  if (!this.isModified('password')) return next();
+  
+  try {
+    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+    this.password = await bcrypt.hash(this.password, salt);
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+});
+
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  try {
+    return await bcrypt.compare(candidatePassword, this.password);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const User = mongoose.model("User", userSchema)
+
 
 module.exports = {
-  Transac
+  Transac,
+  User
 };

@@ -6,6 +6,7 @@ import axios from "axios";
 
 export default function Account() {
   const [data, setData] = useState([]);
+  
   const urlWithProxy = "/api";
 
 
@@ -13,11 +14,12 @@ export default function Account() {
     axios
     .get(urlWithProxy)
     .then((res) => {
+      console.log(res.data)
       setData(res.data)})
     .catch((err) => {
       console.error(err);
     });
-  },[data])
+  },[])
 
   // console.log(data)
   return (
@@ -25,7 +27,7 @@ export default function Account() {
     <Header />
     <div>
       <ul  role="list" className="divide-y divide-gray-100">
-        {data.map((el) => {
+        {data && data.map((el) => {
           return(
           <li key={el._id}>
             <Transaction name={el.name} time={el.time} note={el.note} type={el.type} amount={el.amount} key={el._id} id={el._id}/>
