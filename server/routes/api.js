@@ -38,10 +38,10 @@ router.post("/create", userController.checkToken, (req, res, next) => {
 
 router.delete("/delete/:id", (req, res, next) => {
   const id = req.params.id;
+  console.log(id)
   models.Transac.deleteOne({_id: id})
     .then(() => {
-      console.log("data deleted")
-
+      res.status(200).json("data deleted")
     })
     .catch(err => {
       console.log("delete server error:", err)

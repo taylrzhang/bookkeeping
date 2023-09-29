@@ -19,7 +19,15 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    
+    axios
+      .post('/api/logout')
+      .then((res) => {
+        console.log(res)
+        window.location = "/login"
+      })
+      .catch((err) => {
+        console.error("logout POST: ERROR", err);
+      });
   };
 
   const signup = (url, data) => {

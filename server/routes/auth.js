@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
-router.post('/signup', (req, res, next) => {
+router.post('/signup', (req, res) => {
   const {email, password} = req.body;
   const newUser = new User({
     email, 
@@ -57,5 +57,10 @@ router.post('/login', (req, res) => {
       res.status(200).send('Logged in successfully');
     })
 });
+
+router.post('/logout', (req, res) => {
+  res.clearCookie('jwtToken');
+  res.status(200).json("logged out")
+})
 
 module.exports = router
