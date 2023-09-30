@@ -15,7 +15,7 @@ router.post('/signup', (req, res) => {
   newUser.save()
     .then(() => {
       // Document saved successfully
-      console.log('User saved successfully.');
+      // console.log('User saved successfully.');
       res.send({msg: "User saved successfully."})
     })
     .catch((err) => {
@@ -29,20 +29,14 @@ router.post('/login', (req, res) => {
 
   // Check if the provided credentials are valid
   User.findOne({ email })
-    .then(user => {
-      //user: 
-      // {
-      //   [0]   id: '65164c3982e037d84d9d426c',
-      //   [0]   username: 'z@gamil.com',
-      //   [0]   iat: 1695963632,
-      //   [0]   exp: 1695967232
-      //   [0] }  
+    .then(user => { 
       const isMatch = user.comparePassword(password);
 
       if (isMatch) {
         console.log('Authentication successful.');
       } else {
-        console.log('Authentication failed. Passwords do not match.');
+        // console.log('Authentication failed. Passwords do not match.');
+        throw new Error('Authentication failed. Passwords do not match')
       }
 
       //Generate and send a JWT as a response
@@ -51,11 +45,12 @@ router.post('/login', (req, res) => {
         username: user.email,
       };
       const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
-      // res.json({ token });
 
-      res.cookie('jwtToken', token, { httpOnly: true });
+      // res.cookie('jwtToken', token, { httpOnly: true });
+      res.header('Authorization', `Bearer ${token}`);
       res.status(200).send('Logged in successfully');
     })
+    .catch(err => res.status(401).json({ message: 'Authentication failed', err: err }))
 });
 
 router.post('/logout', (req, res) => {

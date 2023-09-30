@@ -2,13 +2,15 @@ import '../index.css';
 import Header from '../components/Header'
 import { useEffect, useState } from 'react'
 import axios from "axios";
+import { useAuth } from './auth/AuthContext';
+
 
 export default function Account() {
   const [data, setData] = useState([]);
+  const {token} = useAuth();
   const urlWithProxy = "/api";
 
   const deleteTransac = (id) => {
-    console.log(id)
     axios
       .delete(`/api/delete/${id}`)
       .then(() => {
@@ -17,13 +19,15 @@ export default function Account() {
       })
       .catch(err=> console.log("delete", err))
   }
-
-  useEffect(() => {
-    
+  const headers = {
+    'Authorization': `${token}`,
+    withCredentials: true
+  };
+  useEffect(() => {  
     axios
-    .get(urlWithProxy)
+    .get(urlWithProxy, {headers})
     .then((res) => {
-      if(res) setData(res.data)})
+      setData(res.data)})
       .catch((err) => {
         console.error(err);
       });

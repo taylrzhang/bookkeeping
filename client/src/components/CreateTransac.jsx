@@ -2,8 +2,13 @@ import '../App.css'
 import { Link } from "react-router-dom";
 import { useState } from 'react'
 import axios from "axios";
+import { useAuth } from './auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function CreateTransac() {
+  const navigate = useNavigate();
+
   const [data, setData] = useState({
     name: '',
     time: '',
@@ -13,7 +18,7 @@ export default function CreateTransac() {
   });
   const [inputError, setInputError] = useState("");
   const urlWithProxy = "/api/create";
-
+  const {token} = useAuth();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
@@ -40,11 +45,17 @@ export default function CreateTransac() {
       note:data.note
     }
 
+    const headers = {
+      'Authorization': `${token}`,
+      withCredentials: true
+    };
+
     axios
-      .post(urlWithProxy, dataBody)
+      .post(urlWithProxy, dataBody, {headers})
       .then((response) => {
         console.log('Response from server:', response.data);
-        window.location = "/account"
+        // window.location = "/account"
+        navigate('/account', { replace: true });
       })
       .catch((err) => {
         console.error("create api POST: ERROR", err);

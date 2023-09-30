@@ -5,7 +5,6 @@ const userController = require("../controllers/userController")
 const router = express.Router();
 
 router.get( "/", userController.checkToken, (req, res, next) => {
-  console.log(req.user)
   models.Transac.find({userId: req.user.id})
     .exec()
     .then((data) => {
@@ -18,7 +17,6 @@ router.get( "/", userController.checkToken, (req, res, next) => {
 
 router.post("/create", userController.checkToken, (req, res, next) => {
   const {name, time, type, amount, note} = req.body;
-  console.log(req.user);
 
   models.Transac.create({
     name,
@@ -38,7 +36,6 @@ router.post("/create", userController.checkToken, (req, res, next) => {
 
 router.delete("/delete/:id", (req, res, next) => {
   const id = req.params.id;
-  console.log(id)
   models.Transac.deleteOne({_id: id})
     .then(() => {
       res.status(200).json("data deleted")

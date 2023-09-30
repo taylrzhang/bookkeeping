@@ -1,9 +1,14 @@
 import { Link } from "react-router-dom";
 import {useAuth} from "./AuthContext";
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 export default function Login () {
-  const { login } = useAuth();
+
+  const navigate = useNavigate();
+  
+  const {setToken} = useAuth()
 
   const [formData, setFormData] = useState({
     email: '',
@@ -18,6 +23,22 @@ export default function Login () {
     });
   };
 
+  const login = (url, data) => {
+    axios
+      .post(url, data, 
+        {headers: { 'Content-Type': 'application/json' },
+        withCredentials: true}
+      )
+      .then((response) => {
+        setToken(response?.headers?.authorization)
+        
+        navigate('/account', { replace: true });
+      })
+      .catch((err) => {
+        console.error("login POST: ERROR", err);
+      });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,6 +48,7 @@ export default function Login () {
     };
 
     login('/api/login', postData)
+
   }
 
   return (

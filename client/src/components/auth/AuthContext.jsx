@@ -1,28 +1,16 @@
 import { createContext, useContext, useState } from 'react';
 import axios from "axios";
-import { Navigate } from "react-router-dom"
+
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-
-  const login = (url, data) => {
-    axios
-      .post(url, data)
-      .then((response) => {
-        console.log("login res", response)
-        window.location = "/account"
-      })
-      .catch((err) => {
-        console.error("login POST: ERROR", err);
-      });
-  };
+  const [token, setToken] = useState("");
 
   const logout = () => {
     axios
       .post('/api/logout')
       .then((res) => {
-        console.log(res)
         window.location = "/login"
       })
       .catch((err) => {
@@ -42,7 +30,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{  login, logout, signup }}>
+    <AuthContext.Provider value={{ token, setToken, logout, signup }}>
       {children}
     </AuthContext.Provider>
   );
